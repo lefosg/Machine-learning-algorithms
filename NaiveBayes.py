@@ -12,6 +12,8 @@ class NaiveBayesClassification:
 
         self.Prob_reviews_are_postitive = 0
         self.Prob_reviews_are_negative = 0
+
+        self.k = 2  #Laplache smoothness
   
     def fit(self):
         
@@ -33,8 +35,8 @@ class NaiveBayesClassification:
             total_negative_words += np.where(self.A[:,j] > self.B)[0].shape[0]
 
         for j in range(n):
-            self.word_is_positive_prob[j] = self.word_is_positive_prob[j]/total_positive_words
-            self.word_is_negative_prob[j] = self.word_is_negative_prob[j]/total_negative_words
+            self.word_is_positive_prob[j] = (self.word_is_positive_prob[j] + 1)/(total_positive_words + self.k) #Apply Laplache smoothness
+            self.word_is_negative_prob[j] = (self.word_is_negative_prob[j] + 1)/(total_negative_words + self.k) #Apply Laplache smoothness
 
         self.Prob_reviews_are_postitive = np.sum(self.B)
         self.Prob_reviews_are_negative = len(self.B) - self.Prob_reviews_are_postitive
